@@ -121,14 +121,29 @@
 
         .image-tooltip {
             position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%) translateY(-5px);
-            background: rgba(0,0,0,0.8); color: #fff; padding: 10px 14px; border-radius: 10px;
+            padding: 8px 14px; border-radius: 12px;
             font-size: 11px; font-weight: 600; opacity: 0; pointer-events: none;
-            transition: all 0.3s ease; backdrop-filter: blur(4px);
-            width: 140px; text-align: center; word-wrap: break-word; line-height: 1.4;
+            transition: all 0.3s ease;
+            width: auto; max-width: 160px; text-align: center; word-wrap: break-word; line-height: 1.4;
+            white-space: pre-wrap;
         }
-        .image-tooltip::after {
+        .image-tooltip.dark {
+            background: rgba(0,0,0,0.5); color: #fff;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .image-tooltip.light {
+            background: rgba(255,255,255,0.6); color: #1d1d1f;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+        .image-tooltip.dark::after {
             content: ''; position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
-            border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 6px solid rgba(0,0,0,0.8);
+            border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 6px solid rgba(0,0,0,0.5);
+        }
+        .image-tooltip.light::after {
+            content: ''; position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
+            border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 6px solid rgba(255,255,255,0.6);
         }
         .image-wrapper:hover .image-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
 
@@ -223,7 +238,12 @@
                     <button class="add-btn" onclick="addTitleInput()">
                         <span>+</span> Add another title
                     </button>
-                    <label class="label-text" style="margin-top: 15px;">Date</label>
+                    <label class="label-text" style="margin-top: 15px;">Tooltip Style</label>
+                    <select id="tooltipStyleSelect" onchange="updatePreview()" style="margin-bottom: 15px;">
+                        <option value="dark">Glass Dark</option>
+                        <option value="light">Glass Light</option>
+                    </select>
+                    <label class="label-text">Date</label>
                     <input type="date" id="dateInput" oninput="updatePreview()">
                     <label class="label-text">Short Journal</label>
                     <textarea id="descInput" placeholder="The air of that day, the warmth we shared..." oninput="updatePreview()"></textarea>
@@ -257,7 +277,11 @@
                     <label class="label-text">Button Label</label>
                     <input type="text" id="btnTextInput" maxlength="8" placeholder="Keep" oninput="updatePreview()">
                     <label class="label-text">Button Color</label>
-                    <input type="color" id="btnColorPicker" value="#1d1d1f" oninput="updatePreview()" style="width: 100%; height: 40px; border: 1px solid #eee; border-radius: 10px; padding: 4px; background: #f9f9fc; cursor: pointer; margin-bottom: 15px;">
+                    <input type="color" id="btnColorPicker" value="#1d1d1f" oninput="updatePreview()" style="width: 100%; height: 40px; border: 1px solid #eee; border-radius: 10px; padding: 4px; background: #f9f9fc; cursor: pointer; margin-bottom: 10px;">
+                    <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #666; margin-bottom: 15px; cursor: pointer;">
+                        <input type="checkbox" id="btnGradientCheck" onchange="updatePreview()" style="width: 16px; height: 16px; cursor: pointer;">
+                        Apply gradient effect to button
+                    </label>
                     <label class="label-text">Particles (Emoji or Text - add multiple!)</label>
                     <div class="input-list" id="particleList">
                         <div class="input-row">
@@ -275,7 +299,7 @@
             <div class="widget-bg-layer" id="bgLayer"></div>
             <div class="widget-content">
                 <div class="image-wrapper">
-                    <div class="image-tooltip" id="wTooltip">Our First Encounter</div>
+                    <div class="image-tooltip dark" id="wTooltip">Our First Encounter</div>
                     <div class="image-container square" id="imgContainer">
                         <img id="wImg" crossorigin="anonymous" referrerpolicy="no-referrer" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a4c4e4'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23a4c4e4%27%3E%3Cpath d=%27M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z%27/%3E%3C/svg%3E';">
                     </div>
@@ -307,11 +331,13 @@
 
     function getAnalogousColors(hex) {
         const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
-        // Analogous: similar hues with slight variations
+        // Analogous: richer similar hues with warm/cool shifts
+        const warm1 = { r: Math.min(255, r + 30), g: Math.max(0, g - 10), b: Math.max(0, b - 20) };
+        const cool1 = { r: Math.max(0, r - 20), g: Math.min(255, g + 15), b: Math.min(255, b + 30) };
         return [
             `rgba(${r}, ${g}, ${b}, 1)`,
-            `rgba(${Math.min(255, r + 20)}, ${Math.min(255, g + 15)}, ${Math.min(255, b + 10)}, 0.7)`,
-            `rgba(${Math.max(0, r - 15)}, ${Math.max(0, g - 10)}, ${Math.max(0, b - 5)}, 0.5)`
+            `rgba(${warm1.r}, ${warm1.g}, ${warm1.b}, 0.7)`,
+            `rgba(${cool1.r}, ${cool1.g}, ${cool1.b}, 0.6)`
         ];
     }
 
@@ -420,14 +446,19 @@
         const themeColor = document.getElementById('themeColorPicker').value;
         const opacity = document.getElementById('opacityRange').value / 100;
         const bgStyle = document.getElementById('bgStyleSelect').value;
+        const tooltipStyle = document.getElementById('tooltipStyleSelect').value;
         const btnText = document.getElementById('btnTextInput').value || "Keep";
         const btnColor = document.getElementById('btnColorPicker').value;
+        const btnGradient = document.getElementById('btnGradientCheck').checked;
         const shape = document.getElementById('shapeSelect').value;
         const imageUrl = document.getElementById('imageUrlInput').value;
         const dateVal = document.getElementById('dateInput').value;
 
-        // Show first title as default tooltip
-        document.getElementById('wTooltip').innerText = titleArr[0] || "Our First Encounter";
+        // Tooltip style
+        const tooltip = document.getElementById('wTooltip');
+        tooltip.innerText = titleArr[0] || "Our First Encounter";
+        tooltip.className = `image-tooltip ${tooltipStyle}`;
+
         document.getElementById('wDesc').innerText = desc;
 
         const bgLayer = document.getElementById('bgLayer');
@@ -471,8 +502,15 @@
 
         const btn = document.getElementById('actionBtn');
         btn.innerText = btnText;
-        btn.style.backgroundColor = btnColor;
         btn.style.color = getContrastYIQ(btnColor);
+
+        // Button gradient effect
+        if (btnGradient && bgStyle !== 'solid') {
+            const colors = getBackgroundColors(btnColor, bgStyle);
+            btn.style.background = `linear-gradient(135deg, ${btnColor} 0%, ${colors[1]} 100%)`;
+        } else {
+            btn.style.background = btnColor;
+        }
     }
 
     if (params.get('embed')) {
@@ -527,10 +565,24 @@
             }
             bg.style.opacity = op;
 
+            // Tooltip style
+            const tooltipStyle = params.get('ts') || 'dark';
+            const tooltip = document.getElementById('wTooltip');
+            tooltip.className = `image-tooltip ${tooltipStyle}`;
+
+            // Button styling
             const btn = document.getElementById('actionBtn');
             const btnColor = "#" + (params.get('bc') || "1d1d1f");
+            const btnGradient = params.get('bg') === '1';
             btn.innerText = params.get('bt') ? decodeURIComponent(atob(params.get('bt'))) : "Keep";
-            btn.style.backgroundColor = btnColor; btn.style.color = getContrastYIQ(btnColor);
+            btn.style.color = getContrastYIQ(btnColor);
+
+            if (btnGradient && bgStyle !== 'solid') {
+                const colors = getBackgroundColors(btnColor, bgStyle);
+                btn.style.background = `linear-gradient(135deg, ${btnColor} 0%, ${colors[1]} 100%)`;
+            } else {
+                btn.style.background = btnColor;
+            }
 
             document.getElementById('imgContainer').className = `image-container ${params.get('s') || "square"}`;
 
@@ -552,8 +604,10 @@
             const th = (document.getElementById('themeColorPicker').value).replace('#', '');
             const op = document.getElementById('opacityRange').value / 100;
             const bs = document.getElementById('bgStyleSelect').value;
+            const ts = document.getElementById('tooltipStyleSelect').value;
             const bt = btoa(encodeURIComponent(document.getElementById('btnTextInput').value));
             const bc = (document.getElementById('btnColorPicker').value).replace('#', '');
+            const bg = document.getElementById('btnGradientCheck').checked ? '1' : '0';
             const particleArr = getParticles();
             const p = btoa(encodeURIComponent(particleArr.join('|')));
             const s = document.getElementById('shapeSelect').value;
@@ -562,7 +616,7 @@
             const imageUrl = document.getElementById('imageUrlInput').value;
             const img = imageUrl ? btoa(encodeURIComponent(imageUrl)) : "";
 
-            let url = `${window.location.origin}${window.location.pathname}?embed=true&t=${t}&d=${d}&ds=${ds}&th=${th}&op=${op}&bs=${bs}&bt=${bt}&bc=${bc}&p=${p}&s=${s}`;
+            let url = `${window.location.origin}${window.location.pathname}?embed=true&t=${t}&d=${d}&ds=${ds}&th=${th}&op=${op}&bs=${bs}&ts=${ts}&bt=${bt}&bc=${bc}&bg=${bg}&p=${p}&s=${s}`;
             if (img) url += `&img=${img}`;
 
             await navigator.clipboard.writeText(url);
