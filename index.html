@@ -241,8 +241,8 @@
                         <option value="circle">Soft Circle</option>
                         <option value="square" selected>Minimalist Square</option>
                     </select>
-                    <label class="label-text">Upload a Photo (Image URL recommended for Notion)</label>
-                    <input type="text" id="imageUrlInput" placeholder="https://example.com/image.jpg" oninput="updatePreview()">
+                    <label class="label-text">Image URL (use imgur.com or postimages.org for Notion)</label>
+                    <input type="text" id="imageUrlInput" placeholder="https://i.imgur.com/xxxxx.png" oninput="updatePreview()">
                     <input type="file" id="fileInput" accept="image/*" onchange="handleFileUpload(this)" style="font-size: 12px;">
                 </div>
                 <div class="step" id="step3">
@@ -269,7 +269,7 @@
                 <div class="image-wrapper">
                     <div class="image-tooltip" id="wTooltip">Our First Encounter</div>
                     <div class="image-container square" id="imgContainer">
-                        <img id="wImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a4c4e4'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E">
+                        <img id="wImg" crossorigin="anonymous" referrerpolicy="no-referrer" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a4c4e4'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23a4c4e4%27%3E%3Cpath d=%27M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z%27/%3E%3C/svg%3E';">
                     </div>
                 </div>
                 <div class="text-group">
@@ -404,9 +404,16 @@
             bgLayer.style.setProperty('--bg-opacity', opacity);
         } else { bgLayer.style.setProperty('--bg-opacity', 0); }
 
+        // D-day calculation
         if (dateVal) {
             const diff = Math.floor((new Date().setHours(0,0,0,0) - new Date(dateVal).setHours(0,0,0,0)) / 86400000);
-            document.getElementById('wDday').innerText = `D+${Math.max(0, diff)}`;
+            if (diff >= 0) {
+                document.getElementById('wDday').innerText = `D+${diff}`;
+            } else {
+                document.getElementById('wDday').innerText = `D${diff}`;
+            }
+        } else {
+            document.getElementById('wDday').innerText = 'D+0';
         }
 
         document.getElementById('imgContainer').className = `image-container ${shape}`;
@@ -454,7 +461,11 @@
 
             if(params.get('d')) {
                 const diff = Math.floor((new Date().setHours(0,0,0,0) - new Date(params.get('d')).setHours(0,0,0,0)) / 86400000);
-                document.getElementById('wDday').innerText = `D+${Math.max(0, diff)}`;
+                if (diff >= 0) {
+                    document.getElementById('wDday').innerText = `D+${diff}`;
+                } else {
+                    document.getElementById('wDday').innerText = `D${diff}`;
+                }
             }
 
             const colors = getComplementaryColors(th);
