@@ -247,9 +247,11 @@
                 </div>
                 <div class="step" id="step3">
                     <h1>Interaction</h1>
-                    <p>Set the button label and floating particles. Add multiple for random effects!</p>
+                    <p>Set the button label, color, and floating particles.</p>
                     <label class="label-text">Button Label</label>
                     <input type="text" id="btnTextInput" maxlength="8" placeholder="Keep" oninput="updatePreview()">
+                    <label class="label-text">Button Color</label>
+                    <input type="color" id="btnColorPicker" value="#1d1d1f" oninput="updatePreview()" style="width: 100%; height: 40px; border: 1px solid #eee; border-radius: 10px; padding: 4px; background: #f9f9fc; cursor: pointer; margin-bottom: 15px;">
                     <label class="label-text">Particles (Emoji or Text - add multiple!)</label>
                     <div class="input-list" id="particleList">
                         <div class="input-row">
@@ -389,6 +391,7 @@
         const themeColor = document.getElementById('themeColorPicker').value;
         const opacity = document.getElementById('opacityRange').value / 100;
         const btnText = document.getElementById('btnTextInput').value || "Keep";
+        const btnColor = document.getElementById('btnColorPicker').value;
         const shape = document.getElementById('shapeSelect').value;
         const imageUrl = document.getElementById('imageUrlInput').value;
         const dateVal = document.getElementById('dateInput').value;
@@ -427,8 +430,8 @@
 
         const btn = document.getElementById('actionBtn');
         btn.innerText = btnText;
-        btn.style.backgroundColor = themeColor;
-        btn.style.color = getContrastYIQ(themeColor);
+        btn.style.backgroundColor = btnColor;
+        btn.style.color = getContrastYIQ(btnColor);
     }
 
     if (params.get('embed')) {
@@ -474,8 +477,9 @@
             bg.style.setProperty('--bg-opacity', op);
 
             const btn = document.getElementById('actionBtn');
+            const btnColor = "#" + (params.get('bc') || "1d1d1f");
             btn.innerText = params.get('bt') ? decodeURIComponent(atob(params.get('bt'))) : "Keep";
-            btn.style.backgroundColor = th; btn.style.color = getContrastYIQ(th);
+            btn.style.backgroundColor = btnColor; btn.style.color = getContrastYIQ(btnColor);
 
             document.getElementById('imgContainer').className = `image-container ${params.get('s') || "square"}`;
 
@@ -497,6 +501,7 @@
             const th = (document.getElementById('themeColorPicker').value).replace('#', '');
             const op = document.getElementById('opacityRange').value / 100;
             const bt = btoa(encodeURIComponent(document.getElementById('btnTextInput').value));
+            const bc = (document.getElementById('btnColorPicker').value).replace('#', '');
             const particleArr = getParticles();
             const p = btoa(encodeURIComponent(particleArr.join('|')));
             const s = document.getElementById('shapeSelect').value;
@@ -505,7 +510,7 @@
             const imageUrl = document.getElementById('imageUrlInput').value;
             const img = imageUrl ? btoa(encodeURIComponent(imageUrl)) : "";
 
-            let url = `${window.location.origin}${window.location.pathname}?embed=true&t=${t}&d=${d}&ds=${ds}&th=${th}&op=${op}&bt=${bt}&p=${p}&s=${s}`;
+            let url = `${window.location.origin}${window.location.pathname}?embed=true&t=${t}&d=${d}&ds=${ds}&th=${th}&op=${op}&bt=${bt}&bc=${bc}&p=${p}&s=${s}`;
             if (img) url += `&img=${img}`;
 
             await navigator.clipboard.writeText(url);
