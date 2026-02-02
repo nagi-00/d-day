@@ -432,10 +432,21 @@
 
         const bgLayer = document.getElementById('bgLayer');
         if (opacity > 0) {
-            const colors = getBackgroundColors(themeColor, bgStyle);
-            bgLayer.style.setProperty('--g1', colors[0]); bgLayer.style.setProperty('--g2', colors[1]); bgLayer.style.setProperty('--g3', colors[2]);
-            bgLayer.style.setProperty('--bg-opacity', opacity);
-        } else { bgLayer.style.setProperty('--bg-opacity', 0); }
+            if (bgStyle === 'solid') {
+                // Solid: flat color, no gradient, no blur
+                bgLayer.style.background = themeColor;
+                bgLayer.style.filter = 'none';
+            } else {
+                // Gradient styles
+                const colors = getBackgroundColors(themeColor, bgStyle);
+                bgLayer.style.background = `
+                    radial-gradient(circle at 80% 20%, ${colors[0]} 0%, transparent 50%),
+                    radial-gradient(circle at 20% 80%, ${colors[1]} 0%, transparent 60%),
+                    radial-gradient(circle at 50% 50%, ${colors[2]} 0%, transparent 70%)`;
+                bgLayer.style.filter = 'blur(35px)';
+            }
+            bgLayer.style.opacity = opacity;
+        } else { bgLayer.style.opacity = 0; }
 
         // D-day calculation
         if (dateVal) {
@@ -502,10 +513,19 @@
                 }
             }
 
-            const colors = getBackgroundColors(th, bgStyle);
             const bg = document.getElementById('bgLayer');
-            bg.style.setProperty('--g1', colors[0]); bg.style.setProperty('--g2', colors[1]); bg.style.setProperty('--g3', colors[2]);
-            bg.style.setProperty('--bg-opacity', op);
+            if (bgStyle === 'solid') {
+                bg.style.background = th;
+                bg.style.filter = 'none';
+            } else {
+                const colors = getBackgroundColors(th, bgStyle);
+                bg.style.background = `
+                    radial-gradient(circle at 80% 20%, ${colors[0]} 0%, transparent 50%),
+                    radial-gradient(circle at 20% 80%, ${colors[1]} 0%, transparent 60%),
+                    radial-gradient(circle at 50% 50%, ${colors[2]} 0%, transparent 70%)`;
+                bg.style.filter = 'blur(35px)';
+            }
+            bg.style.opacity = op;
 
             const btn = document.getElementById('actionBtn');
             const btnColor = "#" + (params.get('bc') || "1d1d1f");
