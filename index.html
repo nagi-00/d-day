@@ -9,7 +9,7 @@
             --theme-color: #ffffff;
             --accent-color: #1d1d1f;
             --hover-color: rgba(0, 0, 0, 0.04);
-            --shadow-pale: 0 4px 12px rgba(0,0,0,0.06);
+            --shadow-pale: 0 4px 4px rgba(0,0,0,0.06);
             --dark-theme-color: #333;
             --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "SF Pro Display", "Inter", sans-serif;
         }
@@ -296,7 +296,7 @@
                     <label class="label-text">Particles (Emoji or Text - add multiple!)</label>
                     <div class="input-list" id="particleList">
                         <div class="input-row">
-                            <input type="text" placeholder="✨" maxlength="4" oninput="updatePreview()">
+                            <input type="text" placeholder="🤍" maxlength="4" oninput="updatePreview()">
                         </div>
                     </div>
                     <button class="add-btn" onclick="addParticleInput()">
@@ -332,7 +332,7 @@
     let currentStep = 1;
     let uploadedImageData = "";
     let titles = ["Our First Encounter"];
-    let particles = ["✨"];
+    let particles = ["🤍"];
     const params = new URLSearchParams(window.location.search);
 
     function getComplementaryColors(hex) {
@@ -405,7 +405,7 @@
         const row = document.createElement('div');
         row.className = 'input-row';
         row.innerHTML = `
-            <input type="text" placeholder="🎉" maxlength="4" oninput="updatePreview()">
+            <input type="text" placeholder="🤍" maxlength="4" oninput="updatePreview()">
             <button class="remove-btn" onclick="removeInput(this)">×</button>
         `;
         list.appendChild(row);
@@ -438,7 +438,7 @@
 
     function spawnParticles() {
         const particleArr = params.get('embed') ? particles : getParticles();
-        const emoji = getRandomItem(particleArr) || "✨";
+        const emoji = getRandomItem(particleArr) || "🤍";
         const p = document.createElement('div');
         p.className = 'particle'; p.innerText = emoji;
         const rx = (Math.random() - 0.5) * 80, rr = (Math.random() - 0.5) * 70;
