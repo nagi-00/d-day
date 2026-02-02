@@ -6,7 +6,7 @@
     <title>My D-day</title>
     <style>
         :root {
-            --theme-color: #ffffff; 
+            --theme-color: #ffffff;
             --accent-color: #1d1d1f;
             --hover-color: rgba(0, 0, 0, 0.04);
             --shadow-pale: 0 4px 12px rgba(0,0,0,0.06);
@@ -15,14 +15,26 @@
         }
 
         * { box-sizing: border-box; font-family: var(--font-family); letter-spacing: -0.01em; }
-        body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: transparent; padding: 20px; transition: background 0.3s; }
+        html, body { margin: 0; padding: 0; }
+        body { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #f5f5f7; padding: 20px; transition: background 0.3s; }
+
+        /* Main Layout Container */
+        .main-container {
+            display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 40px;
+            width: 100%; max-width: 800px;
+        }
+
+        /* Responsive: vertical layout for tall/narrow screens */
+        @media (max-width: 720px), (max-aspect-ratio: 4/5) {
+            .main-container { flex-direction: column; gap: 25px; }
+        }
 
         /* Onboarding Window */
         .window {
             width: 100%; max-width: 420px; background: #fff; border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow: hidden;
             border: 1px solid rgba(0,0,0,0.06); display: flex; flex-direction: column;
-            margin-bottom: 25px; z-index: 10;
+            z-index: 10; flex-shrink: 0;
         }
         .title-bar { height: 50px; background: #fff; display: flex; align-items: center; padding: 0 16px; border-bottom: 1px solid rgba(0,0,0,0.05); }
         .dots { display: flex; gap: 7px; flex: 1; }
@@ -30,42 +42,60 @@
         .dot.red { background: #e8bcbc; } .dot.yellow { background: #f4f4bd; } .dot.green { background: #c5e8c5; }
         .bar-title { font-size: 13px; font-weight: 700; color: #333; flex: 2; text-align: center; }
         .nav-controls { flex: 1; display: flex; justify-content: flex-end; gap: 12px; }
-        
+
         .content { padding: 30px 25px; min-height: 280px; position: relative; overflow-y: auto; }
         .step { display: none; animation: fadeUp 0.3s ease; }
         .step.active { display: block; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        
+
         h1 { font-size: 20px; font-weight: 800; margin: 0 0 8px; color: #1d1d1f; }
         p { font-size: 13px; color: #86868b; margin-bottom: 20px; line-height: 1.4; }
         input, select, textarea { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #eee; background: #f9f9fc; outline: none; font-size: 13px; margin-bottom: 10px; transition: all 0.2s; }
         textarea { height: 80px; resize: none; }
         input:focus, textarea:focus { border-color: #1d1d1f; background: #fff; }
-        
+
         .label-text { font-size: 11px; font-weight: 700; color: #999; margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.03em; }
 
         /* Navigation Buttons */
-        .nav-btn { 
-            background: none; border: none; cursor: pointer; color: #1d1d1f; 
+        .nav-btn {
+            background: none; border: none; cursor: pointer; color: #1d1d1f;
             transition: opacity 0.2s; padding: 5px; display: flex; align-items: center; justify-content: center;
         }
         .nav-btn:disabled { opacity: 0.1; cursor: default; }
 
-        /* Widget Appearance */
+        /* Dynamic Input List */
+        .input-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+        .input-row { display: flex; gap: 8px; align-items: center; }
+        .input-row input { margin-bottom: 0; flex: 1; }
+        .input-row .remove-btn {
+            width: 32px; height: 32px; border-radius: 8px; border: none; background: #f0f0f0;
+            color: #999; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .input-row .remove-btn:hover { background: #e0e0e0; color: #666; }
+        .add-btn {
+            padding: 10px 16px; border-radius: 10px; border: 1px dashed #ddd;
+            background: transparent; color: #999; cursor: pointer; font-size: 12px; font-weight: 600;
+            transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .add-btn:hover { border-color: #1d1d1f; color: #1d1d1f; background: #f9f9fc; }
+
+        /* Widget Appearance - Smaller size */
         .widget-frame {
-            width: 280px; 
-            height: 340px; 
+            width: 220px;
+            height: 280px;
             background: #ffffff;
-            border-radius: 44px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+            border-radius: 36px;
+            box-shadow: 0 16px 32px rgba(0,0,0,0.06);
             overflow: hidden; display: flex; flex-direction: column;
-            border: 1px solid rgba(0,0,0,0.03); margin: 0 auto;
+            border: 1px solid rgba(0,0,0,0.03);
             position: relative; transition: all 0.5s ease;
+            flex-shrink: 0;
         }
 
         .widget-bg-layer {
             position: absolute; inset: 0;
-            background: 
+            background:
                 radial-gradient(circle at 80% 20%, var(--g1, transparent) 0%, transparent 50%),
                 radial-gradient(circle at 20% 80%, var(--g2, transparent) 0%, transparent 60%),
                 radial-gradient(circle at 50% 50%, var(--g3, transparent) 0%, transparent 70%);
@@ -75,146 +105,191 @@
 
         .widget-content {
             flex: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between;
-            padding: 40px 32px; z-index: 2; position: relative;
+            padding: 28px 24px; z-index: 2; position: relative;
         }
 
-        .image-wrapper { position: relative; align-self: center; margin-bottom: 15px; }
+        .image-wrapper { position: relative; align-self: center; margin-bottom: 12px; }
         .image-container {
-            width: 70px; height: 70px;
+            width: 56px; height: 56px;
             overflow: hidden; display: flex; align-items: center; justify-content: center;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08); background: #fff;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08); background: #fff;
         }
         .image-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
         .image-container.circle { border-radius: 50%; }
-        .image-container.square { border-radius: 18px; }
+        .image-container.square { border-radius: 14px; }
 
         .image-tooltip {
-            position: absolute; top: -35px; left: 50%; transform: translateX(-50%) translateY(5px);
-            background: rgba(0,0,0,0.75); color: #fff; padding: 6px 12px; border-radius: 8px;
+            position: absolute; top: -38px; left: 50%; transform: translateX(-50%) translateY(8px);
+            background: rgba(0,0,0,0.8); color: #fff; padding: 8px 14px; border-radius: 10px;
             font-size: 11px; font-weight: 600; white-space: nowrap; opacity: 0; pointer-events: none;
             transition: all 0.3s ease; backdrop-filter: blur(4px);
+            max-width: 180px; text-align: center;
+        }
+        .image-tooltip::after {
+            content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
+            border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid rgba(0,0,0,0.8);
         }
         .image-wrapper:hover .image-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
 
         .text-group { text-align: left; width: 100%; flex: 1; display: flex; flex-direction: column; justify-content: center; }
-        .dday-text { font-size: 15px; font-weight: 800; color: #1d1d1f; margin-bottom: 4px; }
-        .desc-text { 
-            font-size: 12.5px; font-weight: 500; color: #666; line-height: 1.5; 
+        .dday-text { font-size: 14px; font-weight: 800; color: #1d1d1f; margin-bottom: 4px; }
+        .desc-text {
+            font-size: 11px; font-weight: 500; color: #666; line-height: 1.5;
             word-break: break-word; overflow: hidden;
-            display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;
+            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
         }
 
-        .bottom-area { width: 100%; display: flex; justify-content: flex-end; align-items: center; margin-top: 10px; }
+        .bottom-area { width: 100%; display: flex; justify-content: flex-end; align-items: center; margin-top: 8px; }
 
         .confirm-btn {
-            padding: 9px 20px; border-radius: 11px;
+            padding: 8px 16px; border-radius: 10px;
             background: #1d1d1f; border: none; cursor: pointer;
-            font-size: 12px; font-weight: 700; color: #fff;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.04); transition: all 0.3s ease;
+            font-size: 11px; font-weight: 700; color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.08);
+            transition: all 0.15s ease;
+            transform: translateY(0);
         }
-        .confirm-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
+        .confirm-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.1); }
+        .confirm-btn:active { transform: translateY(1px) scale(0.97); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
 
         .particle {
-            position: absolute; pointer-events: none; font-size: 18px;
-            bottom: 50px; right: 45px;
+            position: absolute; pointer-events: none; font-size: 16px;
+            bottom: 40px; right: 35px;
             animation: chimneyFlow 2.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
             z-index: 10; text-align: center;
         }
         @keyframes chimneyFlow {
             0% { transform: translate(0, 0) scale(0.4); opacity: 0; }
             15% { opacity: 1; }
-            100% { transform: translate(var(--rand-x), -180px) scale(1.4) rotate(var(--rand-r)); opacity: 0; }
+            100% { transform: translate(var(--rand-x), -150px) scale(1.3) rotate(var(--rand-r)); opacity: 0; }
         }
 
         #toast { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); background: #1d1d1f; color: #fff; padding: 14px 28px; border-radius: 20px; font-size: 14px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 200; }
         #toast.show { bottom: 40px; }
-        
-        body.is-embed .window { display: none; }
-        body.is-embed { background: transparent; padding: 0; }
+
+        /* Embed Mode - Fix black bar issue */
+        body.is-embed {
+            background: transparent !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            min-height: auto !important;
+            height: auto !important;
+            overflow: hidden !important;
+        }
+        body.is-embed .main-container { display: contents; }
+        body.is-embed .window { display: none !important; }
+        body.is-embed .widget-frame {
+            margin: 0;
+            box-shadow: none;
+            border: none;
+        }
+        html.is-embed {
+            background: transparent !important;
+            overflow: hidden !important;
+        }
     </style>
 </head>
 <body>
 
-    <div class="window" id="setupWindow">
-        <div class="title-bar">
-            <div class="dots">
-                <div class="dot red"></div>
-                <div class="dot yellow"></div>
-                <div class="dot green"></div>
+    <div class="main-container">
+        <div class="window" id="setupWindow">
+            <div class="title-bar">
+                <div class="dots">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                </div>
+                <div class="bar-title">MOMENT COOKER</div>
+                <div class="nav-controls">
+                    <button class="nav-btn" id="prevBtn" onclick="moveStep(-1)" disabled>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <button class="nav-btn" id="nextBtn" onclick="moveStep(1)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                </div>
             </div>
-            <div class="bar-title">MOMENT COOKER</div>
-            <div class="nav-controls">
-                <button class="nav-btn" id="prevBtn" onclick="moveStep(-1)" disabled>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
-                </button>
-                <button class="nav-btn" id="nextBtn" onclick="moveStep(1)">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
-                </button>
+            <div class="content">
+                <div class="step active" id="step1">
+                    <h1>The Moment</h1>
+                    <p>Define the date and name of your memory. Multiple titles will show randomly on hover.</p>
+                    <label class="label-text">Titles (hover tooltip - add multiple!)</label>
+                    <div class="input-list" id="titleList">
+                        <div class="input-row">
+                            <input type="text" placeholder="Our First Encounter" oninput="updatePreview()">
+                        </div>
+                    </div>
+                    <button class="add-btn" onclick="addTitleInput()">
+                        <span>+</span> Add another title
+                    </button>
+                    <label class="label-text" style="margin-top: 15px;">Date</label>
+                    <input type="date" id="dateInput" oninput="updatePreview()">
+                    <label class="label-text">Short Journal</label>
+                    <textarea id="descInput" placeholder="The air of that day, the warmth we shared..." oninput="updatePreview()"></textarea>
+                </div>
+                <div class="step" id="step2">
+                    <h1>Visual & Shape</h1>
+                    <p>Adjust the density and choose the silhouette of your image.</p>
+                    <label class="label-text">Theme Color & Opacity</label>
+                    <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 20px;">
+                        <input type="color" id="themeColorPicker" value="#a4c4e4" oninput="updatePreview()" style="width: 50px; height: 40px; border:none; padding:0; background:none; cursor:pointer;">
+                        <input type="range" id="opacityRange" min="0" max="100" value="0" oninput="updatePreview()" style="flex: 1;">
+                    </div>
+                    <label class="label-text">Image Shape</label>
+                    <select id="shapeSelect" onchange="updatePreview()">
+                        <option value="circle">Soft Circle</option>
+                        <option value="square" selected>Minimalist Square</option>
+                    </select>
+                    <label class="label-text">Upload a Photo (Image URL recommended for Notion)</label>
+                    <input type="text" id="imageUrlInput" placeholder="https://example.com/image.jpg" oninput="updatePreview()">
+                    <input type="file" id="fileInput" accept="image/*" onchange="handleFileUpload(this)" style="font-size: 12px;">
+                </div>
+                <div class="step" id="step3">
+                    <h1>Interaction</h1>
+                    <p>Set the button label and floating particles. Add multiple for random effects!</p>
+                    <label class="label-text">Button Label</label>
+                    <input type="text" id="btnTextInput" maxlength="8" placeholder="Keep" oninput="updatePreview()">
+                    <label class="label-text">Particles (Emoji or Text - add multiple!)</label>
+                    <div class="input-list" id="particleList">
+                        <div class="input-row">
+                            <input type="text" placeholder="✨" maxlength="4" oninput="updatePreview()">
+                        </div>
+                    </div>
+                    <button class="add-btn" onclick="addParticleInput()">
+                        <span>+</span> Add another particle
+                    </button>
+                </div>
             </div>
         </div>
-        <div class="content">
-            <div class="step active" id="step1">
-                <h1>The Moment</h1>
-                <p>Define the date and name of your memory. The name appears on hover.</p>
-                <label class="label-text">Title of the Memory</label>
-                <input type="text" id="titleInput" placeholder="Our First Encounter" oninput="updatePreview()">
-                <label class="label-text">Date</label>
-                <input type="date" id="dateInput" oninput="updatePreview()">
-                <label class="label-text">Short Journal</label>
-                <textarea id="descInput" placeholder="The air of that day, the warmth we shared..." oninput="updatePreview()"></textarea>
-            </div>
-            <div class="step" id="step2">
-                <h1>Visual & Shape</h1>
-                <p>Adjust the density and choose the silhouette of your image.</p>
-                <label class="label-text">Theme Color & Opacity</label>
-                <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 20px;">
-                    <input type="color" id="themeColorPicker" value="#a4c4e4" oninput="updatePreview()" style="width: 50px; height: 40px; border:none; padding:0; background:none; cursor:pointer;">
-                    <input type="range" id="opacityRange" min="0" max="100" value="0" oninput="updatePreview()" style="flex: 1;">
+
+        <div class="widget-frame" id="wFrame">
+            <div class="widget-bg-layer" id="bgLayer"></div>
+            <div class="widget-content">
+                <div class="image-wrapper">
+                    <div class="image-tooltip" id="wTooltip">Our First Encounter</div>
+                    <div class="image-container square" id="imgContainer">
+                        <img id="wImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a4c4e4'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E">
+                    </div>
                 </div>
-                <label class="label-text">Image Shape</label>
-                <select id="shapeSelect" onchange="updatePreview()">
-                    <option value="circle">Soft Circle</option>
-                    <option value="square" selected>Minimalist Square</option>
-                </select>
-                <label class="label-text">Upload a Photo</label>
-                <input type="file" id="fileInput" accept="image/*" onchange="handleFileUpload(this)">
-            </div>
-            <div class="step" id="step3">
-                <h1>Interaction</h1>
-                <p>Set the button label and floating particles.</p>
-                <label class="label-text">Button Label</label>
-                <input type="text" id="btnTextInput" maxlength="8" placeholder="Keep" oninput="updatePreview()">
-                <label class="label-text">Particles (Emoji or Text)</label>
-                <textarea id="particleEmoji" placeholder="✨&#10;Love" oninput="updatePreview()" style="height: 60px;"></textarea>
+                <div class="text-group">
+                    <div id="wDday" class="dday-text">D+0</div>
+                    <div id="wDesc" class="desc-text" style="white-space: pre-wrap;">The record of that day remains here.</div>
+                </div>
+                <div class="bottom-area">
+                    <button class="confirm-btn" id="actionBtn" onclick="spawnParticles()">Keep</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="widget-frame" id="wFrame">
-        <div class="widget-bg-layer" id="bgLayer"></div>
-        <div class="widget-content">
-            <div class="image-wrapper">
-                <div class="image-tooltip" id="wTooltip">Our First Encounter</div>
-                <div class="image-container square" id="imgContainer">
-                    <img id="wImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a4c4e4'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E">
-                </div>
-            </div>
-            <div class="text-group">
-                <div id="wDday" class="dday-text">D+0</div>
-                <div id="wDesc" class="desc-text" style="white-space: pre-wrap;">The record of that day remains here.</div>
-            </div>
-            <div class="bottom-area">
-                <button class="confirm-btn" id="actionBtn" onclick="spawnParticles()">Keep</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="toast">Magic link copied to clipboard. 🤍</div>
+    <div id="toast">Magic link copied to clipboard.</div>
 
 <script>
     let currentStep = 1;
     let uploadedImageData = "";
+    let titles = ["Our First Encounter"];
+    let particles = ["✨"];
     const params = new URLSearchParams(window.location.search);
 
     function getComplementaryColors(hex) {
@@ -237,43 +312,112 @@
         }
     }
 
+    // Dynamic input management
+    function addTitleInput() {
+        const list = document.getElementById('titleList');
+        const row = document.createElement('div');
+        row.className = 'input-row';
+        row.innerHTML = `
+            <input type="text" placeholder="Another memory title..." oninput="updatePreview()">
+            <button class="remove-btn" onclick="removeInput(this)">×</button>
+        `;
+        list.appendChild(row);
+        row.querySelector('input').focus();
+    }
+
+    function addParticleInput() {
+        const list = document.getElementById('particleList');
+        const row = document.createElement('div');
+        row.className = 'input-row';
+        row.innerHTML = `
+            <input type="text" placeholder="🎉" maxlength="4" oninput="updatePreview()">
+            <button class="remove-btn" onclick="removeInput(this)">×</button>
+        `;
+        list.appendChild(row);
+        row.querySelector('input').focus();
+    }
+
+    function removeInput(btn) {
+        const row = btn.parentElement;
+        const list = row.parentElement;
+        if (list.children.length > 1) {
+            row.remove();
+            updatePreview();
+        }
+    }
+
+    function getTitles() {
+        const inputs = document.querySelectorAll('#titleList input');
+        return Array.from(inputs).map(i => i.value.trim()).filter(v => v.length > 0);
+    }
+
+    function getParticles() {
+        const inputs = document.querySelectorAll('#particleList input');
+        return Array.from(inputs).map(i => i.value.trim()).filter(v => v.length > 0);
+    }
+
+    function getRandomItem(arr) {
+        if (arr.length === 0) return null;
+        return arr[Math.floor(Math.random() * arr.length)];
+    }
+
     function spawnParticles() {
-        const emoji = document.getElementById('particleEmoji').value || "✨";
+        const particleArr = params.get('embed') ? particles : getParticles();
+        const emoji = getRandomItem(particleArr) || "✨";
         const p = document.createElement('div');
         p.className = 'particle'; p.innerText = emoji;
-        const rx = (Math.random() - 0.5) * 100, rr = (Math.random() - 0.5) * 70;
+        const rx = (Math.random() - 0.5) * 80, rr = (Math.random() - 0.5) * 70;
         p.style.setProperty('--rand-x', `${rx}px`); p.style.setProperty('--rand-r', `${rr}deg`);
         document.getElementById('wFrame').appendChild(p);
         setTimeout(() => p.remove(), 2500);
     }
 
+    // Random tooltip on hover
+    function setupRandomTooltip() {
+        const wrapper = document.querySelector('.image-wrapper');
+        const tooltip = document.getElementById('wTooltip');
+        wrapper.addEventListener('mouseenter', () => {
+            const titleArr = params.get('embed') ? titles : getTitles();
+            const randomTitle = getRandomItem(titleArr) || "Our First Encounter";
+            tooltip.innerText = randomTitle;
+        });
+    }
+
     function updatePreview() {
-        const title = document.getElementById('titleInput').value || "Our First Encounter";
-        const dateVal = document.getElementById('dateInput').value;
+        const titleArr = getTitles();
         const desc = document.getElementById('descInput').value || "The record of that day remains here.";
         const themeColor = document.getElementById('themeColorPicker').value;
         const opacity = document.getElementById('opacityRange').value / 100;
         const btnText = document.getElementById('btnTextInput').value || "Keep";
         const shape = document.getElementById('shapeSelect').value;
+        const imageUrl = document.getElementById('imageUrlInput').value;
+        const dateVal = document.getElementById('dateInput').value;
 
-        document.getElementById('wTooltip').innerText = title;
+        // Show first title as default tooltip
+        document.getElementById('wTooltip').innerText = titleArr[0] || "Our First Encounter";
         document.getElementById('wDesc').innerText = desc;
-        
+
         const bgLayer = document.getElementById('bgLayer');
         if (opacity > 0) {
             const colors = getComplementaryColors(themeColor);
             bgLayer.style.setProperty('--g1', colors[0]); bgLayer.style.setProperty('--g2', colors[1]); bgLayer.style.setProperty('--g3', colors[2]);
             bgLayer.style.setProperty('--bg-opacity', opacity);
         } else { bgLayer.style.setProperty('--bg-opacity', 0); }
-        
+
         if (dateVal) {
             const diff = Math.floor((new Date().setHours(0,0,0,0) - new Date(dateVal).setHours(0,0,0,0)) / 86400000);
             document.getElementById('wDday').innerText = `D+${Math.max(0, diff)}`;
         }
 
         document.getElementById('imgContainer').className = `image-container ${shape}`;
-        if (uploadedImageData) document.getElementById('wImg').src = uploadedImageData;
-        
+
+        // Priority: uploaded file > URL input > default
+        if (uploadedImageData) {
+            document.getElementById('wImg').src = uploadedImageData;
+        } else if (imageUrl) {
+            document.getElementById('wImg').src = imageUrl;
+        }
+
         const btn = document.getElementById('actionBtn');
         btn.innerText = btnText;
         btn.style.backgroundColor = themeColor;
@@ -282,41 +426,77 @@
 
     if (params.get('embed')) {
         document.body.classList.add('is-embed');
+        document.documentElement.classList.add('is-embed');
         const apply = () => {
-            const t = decodeURIComponent(atob(params.get('t') || ""));
-            const ds = decodeURIComponent(atob(params.get('ds') || ""));
+            // Decode titles (multiple, separated by |)
+            const titlesParam = params.get('t');
+            if (titlesParam) {
+                try {
+                    titles = decodeURIComponent(atob(titlesParam)).split('|').filter(t => t.length > 0);
+                } catch(e) { titles = ["Our First Encounter"]; }
+            }
+
+            // Decode particles (multiple, separated by |)
+            const particlesParam = params.get('p');
+            if (particlesParam) {
+                try {
+                    particles = decodeURIComponent(atob(particlesParam)).split('|').filter(p => p.length > 0);
+                } catch(e) { particles = ["✨"]; }
+            }
+
+            const ds = params.get('ds') ? decodeURIComponent(atob(params.get('ds'))) : "";
             const th = "#" + (params.get('th') || "1d1d1f");
             const op = params.get('op') || "0";
-            document.getElementById('wTooltip').innerText = t || "Our First Encounter";
+            const imgUrl = params.get('img') ? decodeURIComponent(atob(params.get('img'))) : "";
+
+            document.getElementById('wTooltip').innerText = titles[0] || "Our First Encounter";
             document.getElementById('wDesc').innerText = ds || "";
+
             if(params.get('d')) {
                 const diff = Math.floor((new Date().setHours(0,0,0,0) - new Date(params.get('d')).setHours(0,0,0,0)) / 86400000);
                 document.getElementById('wDday').innerText = `D+${Math.max(0, diff)}`;
             }
+
             const colors = getComplementaryColors(th);
             const bg = document.getElementById('bgLayer');
             bg.style.setProperty('--g1', colors[0]); bg.style.setProperty('--g2', colors[1]); bg.style.setProperty('--g3', colors[2]);
             bg.style.setProperty('--bg-opacity', op);
+
             const btn = document.getElementById('actionBtn');
-            btn.innerText = decodeURIComponent(atob(params.get('bt') || ""));
+            btn.innerText = params.get('bt') ? decodeURIComponent(atob(params.get('bt'))) : "Keep";
             btn.style.backgroundColor = th; btn.style.color = getContrastYIQ(th);
+
             document.getElementById('imgContainer').className = `image-container ${params.get('s') || "square"}`;
+
+            // Apply image URL
+            if (imgUrl) {
+                document.getElementById('wImg').src = imgUrl;
+            }
         };
         apply();
+        setupRandomTooltip();
     }
 
     async function moveStep(n) {
         if (currentStep + n === 4) {
-            const t = btoa(encodeURIComponent(document.getElementById('titleInput').value));
+            const titleArr = getTitles();
+            const t = btoa(encodeURIComponent(titleArr.join('|')));
             const d = document.getElementById('dateInput').value;
             const ds = btoa(encodeURIComponent(document.getElementById('descInput').value));
             const th = (document.getElementById('themeColorPicker').value).replace('#', '');
             const op = document.getElementById('opacityRange').value / 100;
             const bt = btoa(encodeURIComponent(document.getElementById('btnTextInput').value));
-            const p = btoa(encodeURIComponent(document.getElementById('particleEmoji').value));
+            const particleArr = getParticles();
+            const p = btoa(encodeURIComponent(particleArr.join('|')));
             const s = document.getElementById('shapeSelect').value;
 
-            const url = `${window.location.origin}${window.location.pathname}?embed=true&t=${t}&d=${d}&ds=${ds}&th=${th}&op=${op}&bt=${bt}&p=${p}&s=${s}`;
+            // Use image URL if provided, otherwise skip (base64 is too long for URL)
+            const imageUrl = document.getElementById('imageUrlInput').value;
+            const img = imageUrl ? btoa(encodeURIComponent(imageUrl)) : "";
+
+            let url = `${window.location.origin}${window.location.pathname}?embed=true&t=${t}&d=${d}&ds=${ds}&th=${th}&op=${op}&bt=${bt}&p=${p}&s=${s}`;
+            if (img) url += `&img=${img}`;
+
             await navigator.clipboard.writeText(url);
             document.getElementById('toast').classList.add('show');
             setTimeout(() => document.getElementById('toast').classList.remove('show'), 3000);
@@ -328,7 +508,12 @@
         document.getElementById('prevBtn').disabled = (currentStep === 1);
     }
 
-    window.onload = () => { if (!params.get('embed')) updatePreview(); };
+    window.onload = () => {
+        if (!params.get('embed')) {
+            updatePreview();
+            setupRandomTooltip();
+        }
+    };
 </script>
 </body>
 </html>
