@@ -80,17 +80,19 @@
         }
         .add-btn:hover { border-color: #1d1d1f; color: #1d1d1f; background: #f9f9fc; }
 
-        /* Widget Appearance - Smaller size */
+        /* Widget Appearance - Smaller size (0.8x) */
         .widget-frame {
-            width: 220px;
-            height: 280px;
+            width: 176px;
+            height: 224px;
             background: #ffffff;
-            border-radius: 36px;
-            box-shadow: 0 16px 32px rgba(0,0,0,0.06);
+            border-radius: 29px;
             overflow: hidden; display: flex; flex-direction: column;
-            border: 1px solid rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.08);
             position: relative; transition: all 0.5s ease;
             flex-shrink: 0;
+        }
+        .widget-frame.with-shadow {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06);
         }
 
         .widget-bg-layer {
@@ -105,19 +107,19 @@
 
         .widget-content {
             flex: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between;
-            padding: 28px 24px; z-index: 2; position: relative;
+            padding: 22px 19px; z-index: 2; position: relative;
         }
 
-        .image-wrapper { position: relative; align-self: center; margin-bottom: 12px; }
+        .image-wrapper { position: relative; align-self: center; margin-bottom: 10px; }
         .image-container {
-            width: 56px; height: 56px;
+            width: 45px; height: 45px;
             overflow: hidden; display: flex; align-items: center; justify-content: center;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08); background: #fff;
+            box-shadow: 0 5px 14px rgba(0, 0, 0, 0.08); background: #fff;
         }
         .image-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
         .image-container.circle { border-radius: 50%; }
-        .image-container.square { border-radius: 14px; }
+        .image-container.square { border-radius: 11px; }
 
         .image-tooltip {
             position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%) translateY(-5px);
@@ -148,20 +150,20 @@
         .image-wrapper:hover .image-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
 
         .text-group { text-align: left; width: 100%; flex: 1; display: flex; flex-direction: column; justify-content: center; }
-        .dday-text { font-size: 14px; font-weight: 800; color: #1d1d1f; margin-bottom: 4px; }
+        .dday-text { font-size: 12px; font-weight: 800; color: #1d1d1f; margin-bottom: 3px; }
         .desc-text {
-            font-size: 11px; font-weight: 500; color: #666; line-height: 1.5;
+            font-size: 9px; font-weight: 500; color: #666; line-height: 1.5;
             word-break: break-word; overflow: hidden;
             display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
         }
 
-        .bottom-area { width: 100%; display: flex; justify-content: flex-end; align-items: center; margin-top: 8px; }
+        .bottom-area { width: 100%; display: flex; justify-content: flex-end; align-items: center; margin-top: 6px; }
 
         .confirm-btn {
-            padding: 8px 16px; border-radius: 10px;
+            padding: 6px 13px; border-radius: 8px;
             background: #1d1d1f; border: none; cursor: pointer;
-            font-size: 11px; font-weight: 700; color: #fff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.08);
+            font-size: 9px; font-weight: 700; color: #fff;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.08);
             transition: all 0.15s ease;
             transform: translateY(0);
         }
@@ -196,9 +198,11 @@
         body.is-embed .window { display: none !important; }
         body.is-embed .widget-frame {
             margin: 0;
-            box-shadow: none;
-            border: none;
         }
+        body.is-embed .widget-frame:not(.with-shadow) {
+            box-shadow: none;
+        }
+        body.is-embed #toast { display: none !important; }
         html.is-embed {
             background: transparent !important;
             overflow: hidden !important;
@@ -257,11 +261,15 @@
                         <input type="range" id="opacityRange" min="0" max="100" value="0" oninput="updatePreview()" style="flex: 1;">
                     </div>
                     <label class="label-text">Background Style</label>
-                    <select id="bgStyleSelect" onchange="updatePreview()" style="margin-bottom: 15px;">
+                    <select id="bgStyleSelect" onchange="updatePreview()" style="margin-bottom: 10px;">
                         <option value="complementary">Watercolor Gradient (Complementary)</option>
                         <option value="analogous">Soft Gradient (Analogous)</option>
                         <option value="solid">Solid Color</option>
                     </select>
+                    <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #666; margin-bottom: 15px; cursor: pointer;">
+                        <input type="checkbox" id="widgetShadowCheck" onchange="updatePreview()" checked style="width: 16px; height: 16px; cursor: pointer;">
+                        Add soft shadow (floating effect)
+                    </label>
                     <label class="label-text">Image Shape</label>
                     <select id="shapeSelect" onchange="updatePreview()">
                         <option value="circle">Soft Circle</option>
@@ -269,7 +277,10 @@
                     </select>
                     <label class="label-text">Image URL (use imgur.com or postimages.org for Notion)</label>
                     <input type="text" id="imageUrlInput" placeholder="https://i.imgur.com/xxxxx.png" oninput="updatePreview()">
-                    <input type="file" id="fileInput" accept="image/*" onchange="handleFileUpload(this)" style="font-size: 12px;">
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <input type="file" id="fileInput" accept="image/*,image/gif" onchange="handleFileUpload(this)" style="font-size: 12px; flex: 1;">
+                        <button type="button" onclick="clearUploadedImage()" style="padding: 6px 12px; border-radius: 8px; border: 1px solid #ddd; background: #f5f5f5; color: #666; font-size: 11px; cursor: pointer;">Clear</button>
+                    </div>
                 </div>
                 <div class="step" id="step3">
                     <h1>Interaction</h1>
@@ -295,7 +306,7 @@
             </div>
         </div>
 
-        <div class="widget-frame" id="wFrame">
+        <div class="widget-frame with-shadow" id="wFrame">
             <div class="widget-bg-layer" id="bgLayer"></div>
             <div class="widget-content">
                 <div class="image-wrapper">
@@ -367,6 +378,13 @@
             reader.onload = (e) => { uploadedImageData = e.target.result; updatePreview(); };
             reader.readAsDataURL(file);
         }
+    }
+
+    function clearUploadedImage() {
+        uploadedImageData = "";
+        document.getElementById('fileInput').value = "";
+        document.getElementById('imageUrlInput').value = "";
+        document.getElementById('wImg').src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a4c4e4'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E";
     }
 
     // Dynamic input management
@@ -446,6 +464,7 @@
         const themeColor = document.getElementById('themeColorPicker').value;
         const opacity = document.getElementById('opacityRange').value / 100;
         const bgStyle = document.getElementById('bgStyleSelect').value;
+        const widgetShadow = document.getElementById('widgetShadowCheck').checked;
         const tooltipStyle = document.getElementById('tooltipStyleSelect').value;
         const btnText = document.getElementById('btnTextInput').value || "Keep";
         const btnColor = document.getElementById('btnColorPicker').value;
@@ -453,6 +472,10 @@
         const shape = document.getElementById('shapeSelect').value;
         const imageUrl = document.getElementById('imageUrlInput').value;
         const dateVal = document.getElementById('dateInput').value;
+
+        // Widget shadow
+        const wFrame = document.getElementById('wFrame');
+        wFrame.classList.toggle('with-shadow', widgetShadow);
 
         // Tooltip style
         const tooltip = document.getElementById('wTooltip');
@@ -504,9 +527,9 @@
         btn.innerText = btnText;
         btn.style.color = getContrastYIQ(btnColor);
 
-        // Button gradient effect
-        if (btnGradient && bgStyle !== 'solid') {
-            const colors = getBackgroundColors(btnColor, bgStyle);
+        // Button gradient effect (always use analogous colors)
+        if (btnGradient) {
+            const colors = getAnalogousColors(btnColor);
             btn.style.background = `linear-gradient(135deg, ${btnColor} 0%, ${colors[1]} 100%)`;
         } else {
             btn.style.background = btnColor;
@@ -537,7 +560,12 @@
             const th = "#" + (params.get('th') || "1d1d1f");
             const op = params.get('op') || "0";
             const bgStyle = params.get('bs') || "complementary";
+            const widgetShadow = params.get('ws') !== '0';
             const imgUrl = params.get('img') ? decodeURIComponent(atob(params.get('img'))) : "";
+
+            // Widget shadow
+            const wFrame = document.getElementById('wFrame');
+            wFrame.classList.toggle('with-shadow', widgetShadow);
 
             document.getElementById('wTooltip').innerText = titles[0] || "Our First Encounter";
             document.getElementById('wDesc').innerText = ds || "";
@@ -577,8 +605,9 @@
             btn.innerText = params.get('bt') ? decodeURIComponent(atob(params.get('bt'))) : "Keep";
             btn.style.color = getContrastYIQ(btnColor);
 
-            if (btnGradient && bgStyle !== 'solid') {
-                const colors = getBackgroundColors(btnColor, bgStyle);
+            // Button gradient (always analogous)
+            if (btnGradient) {
+                const colors = getAnalogousColors(btnColor);
                 btn.style.background = `linear-gradient(135deg, ${btnColor} 0%, ${colors[1]} 100%)`;
             } else {
                 btn.style.background = btnColor;
@@ -604,6 +633,7 @@
             const th = (document.getElementById('themeColorPicker').value).replace('#', '');
             const op = document.getElementById('opacityRange').value / 100;
             const bs = document.getElementById('bgStyleSelect').value;
+            const ws = document.getElementById('widgetShadowCheck').checked ? '1' : '0';
             const ts = document.getElementById('tooltipStyleSelect').value;
             const bt = btoa(encodeURIComponent(document.getElementById('btnTextInput').value));
             const bc = (document.getElementById('btnColorPicker').value).replace('#', '');
@@ -616,7 +646,7 @@
             const imageUrl = document.getElementById('imageUrlInput').value;
             const img = imageUrl ? btoa(encodeURIComponent(imageUrl)) : "";
 
-            let url = `${window.location.origin}${window.location.pathname}?embed=true&t=${t}&d=${d}&ds=${ds}&th=${th}&op=${op}&bs=${bs}&ts=${ts}&bt=${bt}&bc=${bc}&bg=${bg}&p=${p}&s=${s}`;
+            let url = `${window.location.origin}${window.location.pathname}?embed=true&t=${t}&d=${d}&ds=${ds}&th=${th}&op=${op}&bs=${bs}&ws=${ws}&ts=${ts}&bt=${bt}&bc=${bc}&bg=${bg}&p=${p}&s=${s}`;
             if (img) url += `&img=${img}`;
 
             await navigator.clipboard.writeText(url);
