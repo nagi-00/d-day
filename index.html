@@ -243,12 +243,13 @@
                         <option value="light">Glass Light</option>
                     </select>
                     <label class="label-text">Date</label>
-                    <input type="date" id="dateInput" oninput="updatePreview()">
-                    <label class="label-text" style="margin-top: 10px;">Date Display</label>
-                    <select id="dateDisplaySelect" onchange="updatePreview()">
-                        <option value="dday">D-day (D+123)</option>
-                        <option value="date">Date (2024.01.15)</option>
-                    </select>
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <input type="date" id="dateInput" oninput="updatePreview()" style="flex: 1; margin-bottom: 0;">
+                        <select id="dateDisplaySelect" onchange="updatePreview()" style="flex: 1; margin-bottom: 0;">
+                            <option value="dday">D-day</option>
+                            <option value="date">Date</option>
+                        </select>
+                    </div>
                     <label class="label-text">Short Journal</label>
                     <textarea id="descInput" placeholder="The air of that day, the warmth we shared..." oninput="updatePreview()"></textarea>
                 </div>
