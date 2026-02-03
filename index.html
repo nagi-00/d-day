@@ -227,20 +227,20 @@
             <div class="content">
                 <div class="step active" id="step1">
                     <h1>The Moment</h1>
-                    <p>Define the date and name of your memory. Multiple titles will show randomly on hover.</p>
-                    <label class="label-text">Titles (hover tooltip - add multiple!)</label>
+                    <p>Define the date and write down some stories of your memory. Multiple titles will show 💬 randomly on hover.</p>
+                    <label class="label-text">Titles</label>
                     <div class="input-list" id="titleList">
                         <div class="input-row">
-                            <input type="text" placeholder="Our First Encounter" oninput="updatePreview()">
+                            <input type="text" placeholder="Enter..." oninput="updatePreview()">
                         </div>
                     </div>
                     <button class="add-btn" onclick="addTitleInput()">
-                        <span>+</span> Add another title
+                        <span>+</span> Add another 💬
                     </button>
                     <label class="label-text" style="margin-top: 15px;">Tooltip Style</label>
                     <select id="tooltipStyleSelect" onchange="updatePreview()" style="margin-bottom: 15px;">
-                        <option value="dark">Glass Dark</option>
-                        <option value="light">Glass Light</option>
+                        <option value="dark">🖤</option>
+                        <option value="light">🤍</option>
                     </select>
                     <label class="label-text">Date</label>
                     <div style="display: flex; gap: 10px; margin-bottom: 10px;">
@@ -250,34 +250,34 @@
                             <option value="date">Date</option>
                         </select>
                     </div>
-                    <label class="label-text">Short Journal</label>
-                    <textarea id="descInput" placeholder="The air of that day, the warmth we shared..." oninput="updatePreview()"></textarea>
+                    <label class="label-text">Stories</label>
+                    <textarea id="descInput" placeholder="Enter..." oninput="updatePreview()"></textarea>
                 </div>
                 <div class="step" id="step2">
                     <h1>Visual & Shape</h1>
-                    <p>Adjust the density and choose the silhouette of your image.</p>
+                    <p>Adjust the style and density of the backgrounds, and more! </p>
                     <label class="label-text">Theme Color & Opacity</label>
                     <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px;">
                         <input type="color" id="themeColorPicker" value="#a4c4e4" oninput="updatePreview()" style="width: 50px; height: 40px; border:none; padding:0; background:none; cursor:pointer;">
                         <input type="range" id="opacityRange" min="0" max="100" value="0" oninput="updatePreview()" style="flex: 1;">
                     </div>
-                    <label class="label-text">Background Style</label>
+                    <label class="label-text">Coloring Style</label>
                     <select id="bgStyleSelect" onchange="updatePreview()" style="margin-bottom: 10px;">
-                        <option value="complementary">Watercolor Gradient (Complementary)</option>
-                        <option value="analogous">Soft Gradient (Analogous)</option>
-                        <option value="solid">Solid Color</option>
+                        <option value="complementary">Watercolor(Complementary)</option>
+                        <option value="analogous">Soft(Analogous)</option>
+                        <option value="solid">Solid(One color)</option>
                     </select>
                     <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #666; margin-bottom: 15px; cursor: pointer;">
                         <input type="checkbox" id="widgetShadowCheck" onchange="updatePreview()" checked style="width: 16px; height: 16px; cursor: pointer;">
-                        Add soft shadow (floating effect)
+                        Please add some soft shadow!
                     </label>
                     <label class="label-text">Image Shape</label>
                     <select id="shapeSelect" onchange="updatePreview()">
-                        <option value="circle">Soft Circle</option>
-                        <option value="square" selected>Minimalist Square</option>
+                        <option value="circle">Circle</option>
+                        <option value="square" selected>Square</option>
                     </select>
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <label class="label-text" style="margin-bottom: 0;">Image URL</label>
+                        <label class="label-text" style="margin-bottom: 0;">Image URL (png, jpg, gif, etc.) </label>
                         <a href="https://postimages.org/" target="_blank" rel="noopener" style="font-size: 10px; color: #999; text-decoration: none;">Get image URL ↗</a>
                     </div>
                     <input type="text" id="imageUrlInput" placeholder="https://i.postimg.cc/xxxxx.png" oninput="updatePreview()">
@@ -287,17 +287,17 @@
                     </div>
                     <label class="label-text">Image Zoom & Position</label>
                     <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
-                        <span style="font-size: 11px; color: #666; width: 45px;">Zoom</span>
+                        <span style="font-size: 11px; color: #666; width: 40px;">Zoom</span>
                         <input type="range" id="imgZoomRange" min="100" max="300" value="100" oninput="updatePreview()" style="flex: 1;">
                         <span id="zoomValue" style="font-size: 11px; color: #999; width: 35px; text-align: right;">1.0x</span>
                     </div>
                     <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
-                        <span style="font-size: 11px; color: #666; width: 45px;">X</span>
+                        <span style="font-size: 11px; color: #666; width: 40px;">X</span>
                         <input type="range" id="imgPosX" min="-50" max="50" value="0" step="1" oninput="updatePreview()" style="flex: 1;">
                         <button type="button" onclick="resetImagePos()" style="padding: 4px 8px; border-radius: 6px; border: 1px solid #ddd; background: #f5f5f5; color: #666; font-size: 10px; cursor: pointer;">Reset</button>
                     </div>
                     <div style="display: flex; gap: 10px; align-items: center;">
-                        <span style="font-size: 11px; color: #666; width: 45px;">Y</span>
+                        <span style="font-size: 11px; color: #666; width: 40px;">Y</span>
                         <input type="range" id="imgPosY" min="-50" max="50" value="0" step="1" oninput="updatePreview()" style="flex: 1;">
                     </div>
                 </div>
@@ -305,14 +305,14 @@
                     <h1>Interaction</h1>
                     <p>Set the button label, color, and floating particles.</p>
                     <label class="label-text">Button Label</label>
-                    <input type="text" id="btnTextInput" maxlength="8" placeholder="Keep" oninput="updatePreview()">
+                    <input type="text" id="btnTextInput" maxlength="8" placeholder="Button" oninput="updatePreview()">
                     <label class="label-text">Button Color</label>
                     <input type="color" id="btnColorPicker" value="#1d1d1f" oninput="updatePreview()" style="width: 100%; height: 40px; border: 1px solid #eee; border-radius: 10px; padding: 4px; background: #f9f9fc; cursor: pointer; margin-bottom: 10px;">
                     <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #666; margin-bottom: 15px; cursor: pointer;">
                         <input type="checkbox" id="btnGradientCheck" onchange="updatePreview()" style="width: 16px; height: 16px; cursor: pointer;">
-                        Apply gradient effect to button
+                        Please add some soft gradients!
                     </label>
-                    <label class="label-text">Particles (Emoji or Text - add multiple!)</label>
+                    <label class="label-text">Particles</label>
                     <div class="input-list" id="particleList">
                         <div class="input-row">
                             <input type="text" placeholder="🤍" maxlength="4" oninput="updatePreview()">
@@ -345,7 +345,7 @@
         </div>
     </div>
 
-    <div id="toast">Magic link copied to clipboard.</div>
+    <div id="toast">🤍 Copied! /embed to your Notion. </div>
 
 <script>
     let currentStep = 1;
