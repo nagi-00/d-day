@@ -493,13 +493,13 @@
 
     function updatePreview() {
         const titleArr = getTitles();
-        const desc = document.getElementById('descInput').value || "The record of that day remains here.";
+        const desc = document.getElementById('descInput').value || "Stories appear here.";
         const themeColor = document.getElementById('themeColorPicker').value;
         const opacity = document.getElementById('opacityRange').value / 100;
         const bgStyle = document.getElementById('bgStyleSelect').value;
         const widgetShadow = document.getElementById('widgetShadowCheck').checked;
         const tooltipStyle = document.getElementById('tooltipStyleSelect').value;
-        const btnText = document.getElementById('btnTextInput').value || "Keep";
+        const btnText = document.getElementById('btnTextInput').value || "Button";
         const btnColor = document.getElementById('btnColorPicker').value;
         const btnGradient = document.getElementById('btnGradientCheck').checked;
         const shape = document.getElementById('shapeSelect').value;
@@ -654,7 +654,7 @@
             const btn = document.getElementById('actionBtn');
             const btnColor = "#" + (params.get('bc') || "1d1d1f");
             const btnGradient = params.get('bg') === '1';
-            btn.innerText = params.get('bt') ? decodeURIComponent(atob(params.get('bt'))) : "Keep";
+            btn.innerText = params.get('bt') ? decodeURIComponent(atob(params.get('bt'))) : "Button";
             btn.style.color = getContrastYIQ(btnColor);
 
             // Button gradient (always analogous)
